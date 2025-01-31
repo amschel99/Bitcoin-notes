@@ -1,0 +1,6 @@
+[book]
+authors = ["amschel99"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Bitcoin notes"
