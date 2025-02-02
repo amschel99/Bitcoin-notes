@@ -39,19 +39,21 @@ The public key is typically 64 bytes long. An additional prefix byte is added, m
 
 ### Key Generation Process
 ```mermaid
+
 graph TD
     A[Choose Base Point G] --> B[Generate Private Key k]
     B --> C[Compute Public Key K = G * k]
-    C --> D[Public Key K is a point (x, y) on the curve]
+    C --> D[Public Key K is a point on the curve with x and y coordinates]
 
 ```
 
 ## Compressed vs Uncompressed Public Keys
 ```mermaid
+
 graph TD
-    A[Public Key (x, y)] --> B{Compressed?}
-    B -->|Yes| C[Store x + Prefix (02 or 03)]
-    B -->|No| D[Store x + y + Prefix (04)]
+    A[Public Key] --> B{Compressed?}
+    B -->|Yes| C[Store x , Prefix 02 or 03]
+    B -->|No| D[Store x, y, and Prefix 04]
 ```
 
 ## Summary
