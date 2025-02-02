@@ -186,17 +186,19 @@ y^2 \mod p = (x^3 + 7) \mod p
 <hr />
 <h2 id="mermaid-diagrams"><a class="header" href="#mermaid-diagrams">Mermaid Diagrams</a></h2>
 <h3 id="key-generation-process"><a class="header" href="#key-generation-process">Key Generation Process</a></h3>
-<pre class="mermaid">graph TD
+<pre class="mermaid">
+graph TD
     A[Choose Base Point G] --&gt; B[Generate Private Key k]
     B --&gt; C[Compute Public Key K = G * k]
-    C --&gt; D[Public Key K is a point (x, y) on the curve]
+    C --&gt; D[Public Key K is a point on the curve with x and y coordinates]
 
 </pre>
 <h2 id="compressed-vs-uncompressed-public-keys"><a class="header" href="#compressed-vs-uncompressed-public-keys">Compressed vs Uncompressed Public Keys</a></h2>
-<pre class="mermaid">graph TD
-    A[Public Key (x, y)] --&gt; B{Compressed?}
-    B --&gt;|Yes| C[Store x + Prefix (02 or 03)]
-    B --&gt;|No| D[Store x + y + Prefix (04)]
+<pre class="mermaid">
+graph TD
+    A[Public Key] --&gt; B{Compressed?}
+    B --&gt;|Yes| C[Store x , Prefix 02 or 03]
+    B --&gt;|No| D[Store x, y, and Prefix 04]
 </pre>
 <h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
 <ul>
