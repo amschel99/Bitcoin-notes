@@ -3,8 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Bitcoin notes</title>
-        <meta name="robots" content="noindex">
+        <title>Private keys and Public keys - Bitcoin notes</title>
 
 
         <!-- Custom HTML head -->
@@ -153,60 +152,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="base58-encoding-in-bitcoin"><a class="header" href="#base58-encoding-in-bitcoin">Base58 Encoding in Bitcoin</a></h1>
-<p>Base58 is a binary-to-text encoding scheme used in Bitcoin to represent data (e.g., addresses) with fewer symbols, avoiding visually ambiguous characters. It is derived from <strong>Base64</strong> but removes the following characters:<br />
-<code>0</code> (zero), <code>O</code> (uppercase o), <code>l</code> (lowercase L), <code>I</code> (uppercase i), <code>+</code>, and <code>/</code>.</p>
-<hr />
-<h2 id="key-steps-in-base58-encoding"><a class="header" href="#key-steps-in-base58-encoding">Key Steps in Base58 Encoding</a></h2>
-<h3 id="1-add-a-prefix"><a class="header" href="#1-add-a-prefix">1. Add a Prefix</a></h3>
-<ul>
-<li>A <strong>prefix</strong> (version byte) is prepended to the data to identify its type.<br />
-Common prefixes include:
-<ul>
-<li><code>0x00</code> for <strong>Pay-to-Public-Key-Hash (P2PKH)</strong> addresses.</li>
-<li><code>0x05</code> for <strong>Pay-to-Script-Hash (P2SH)</strong> addresses.</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-compute-checksum"><a class="header" href="#2-compute-checksum">2. Compute Checksum</a></h3>
-<ol>
-<li>
-<p><strong>Hash the prefix + payload</strong> twice using SHA256:
-<code>hash = SHA256(SHA256(prefix + payload))</code></p>
-</li>
-<li>
-<p>Take the <strong>first 4 bytes</strong> of the resulting 32-byte hash. This serves as the checksum.</p>
-</li>
-</ol>
-<h3 id="3-concatenate-components"><a class="header" href="#3-concatenate-components">3. Concatenate Components</a></h3>
-<p>Combine the prefix, payload, and checksum into a single byte sequence:
-<code>final_data = prefix + payload + checksum</code></p>
-<h3 id="4-base58-encode"><a class="header" href="#4-base58-encode">4. Base58 Encode</a></h3>
-<p>Encode the <code>final_data</code> using Base58 encoding.</p>
-<ul>
-<li><strong>Base58 alphabet</strong>: <code>123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz</code></li>
-</ul>
-<hr />
-<h2 id="example-structure"><a class="header" href="#example-structure">Example Structure</a></h2>
-<p>For a P2PKH address:
-<code>[0x00 (1 byte)] + [Public Key Hash (20 bytes)] + [Checksum (4 bytes)]</code></p>
-<h2 id="why-use-base58"><a class="header" href="#why-use-base58">Why Use Base58?</a></h2>
-<ul>
-<li><strong>User-friendly</strong>: Removes ambiguous characters to prevent errors in manual entry.</li>
-<li><strong>Error detection</strong>: The checksum allows validation of data integrity.</li>
-<li><strong>Compact representation</strong>: Encodes data in fewer characters than hexadecimal.</li>
-</ul>
-<hr />
-<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
-<p>Bitcoin uses Base58Check encoding (Base58 with checksum) for addresses:</p>
-<ol>
-<li>Add a <strong>prefix</strong> to identify data type.</li>
-<li>Compute a <strong>checksum</strong> via double SHA256 hashing.</li>
-<li>Combine and encode in Base58.</li>
-</ol>
-<h2 id="challenge"><a class="header" href="#challenge">Challenge</a></h2>
-<p>1.Given a  base58 <code>tprv</code>,  extract the private key and chaincode</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="ecdsa-elliptic-curve-digital-signature-algorithm"><a class="header" href="#ecdsa-elliptic-curve-digital-signature-algorithm">ECDSA (Elliptic Curve Digital Signature Algorithm)</a></h1>
+                        <h1 id="ecdsa-elliptic-curve-digital-signature-algorithm"><a class="header" href="#ecdsa-elliptic-curve-digital-signature-algorithm">ECDSA (Elliptic Curve Digital Signature Algorithm)</a></h1>
 <p>ECDSA is a cryptographic algorithm used for digital signatures. It relies on the mathematics of elliptic curves to provide security.</p>
 <h2 id="key-generation"><a class="header" href="#key-generation">Key Generation</a></h2>
 <ol>
@@ -252,7 +198,7 @@ y^2 \mod p = (x^3 + 7) \mod p
     B --&gt;|Yes| C[Store x + Prefix (02 or 03)]
     B --&gt;|No| D[Store x + y + Prefix (04)]
 </code></pre>
-<h2 id="summary-1"><a class="header" href="#summary-1">Summary</a></h2>
+<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
 <ul>
 <li><strong>Private Key</strong>: A random number <code>k</code> (32 bytes).</li>
 <li><strong>Public Key</strong>: A point <code>K = G * k</code> on the elliptic curve (64 bytes uncompressed, 33 bytes compressed).</li>
@@ -269,6 +215,9 @@ y^2 \mod p = (x^3 + 7) \mod p
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="base58-encoding.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
 
                         <div style="clear: both"></div>
@@ -277,6 +226,9 @@ y^2 \mod p = (x^3 + 7) \mod p
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="base58-encoding.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
             </nav>
 
@@ -300,11 +252,6 @@ y^2 \mod p = (x^3 + 7) \mod p
 
         <!-- Custom JS scripts -->
 
-        <script>
-        window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
-        });
-        </script>
 
     </div>
     </body>
