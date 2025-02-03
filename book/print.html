@@ -266,6 +266,61 @@ graph TD
 </ul>
 </li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="segwit-segregated-witness"><a class="header" href="#segwit-segregated-witness">SegWit (Segregated Witness)</a></h1>
+<h2 id="-what-is-segwit"><a class="header" href="#-what-is-segwit">🔹 What is SegWit?</a></h2>
+<ul>
+<li><strong>SegWit = Segregated Witness</strong></li>
+<li>It was a Bitcoin upgrade in <strong>2017</strong>.</li>
+<li><strong>Separates signature (witness data) from transaction data.</strong></li>
+<li>Helps fix <strong>transaction malleability</strong> and improves Bitcoin scalability.</li>
+</ul>
+<hr />
+<h2 id="-why-was-segwit-needed"><a class="header" href="#-why-was-segwit-needed">🔹 Why Was SegWit Needed?</a></h2>
+<h3 id="-transaction-malleability-fix"><a class="header" href="#-transaction-malleability-fix">✅ Transaction Malleability Fix</a></h3>
+<ul>
+<li>Before SegWit, <strong>txid (transaction ID) included the signature</strong>.</li>
+<li>Attackers could <strong>modify the signature</strong> → <strong>Change txid</strong> without changing the transaction.</li>
+<li>This caused issues for <strong>Lightning Network</strong> and Bitcoin apps.</li>
+<li><strong>SegWit removes signatures from the txid calculation</strong>, fixing this issue.</li>
+</ul>
+<h3 id="-more-transactions-per-block"><a class="header" href="#-more-transactions-per-block">✅ More Transactions per Block</a></h3>
+<ul>
+<li><strong>Transactions become smaller</strong> → <strong>More transactions fit in a block</strong>.</li>
+<li><strong>Lower fees</strong> and <strong>faster confirmations</strong>.</li>
+</ul>
+<hr />
+<h2 id="-how-segwit-works"><a class="header" href="#-how-segwit-works">🔹 How SegWit Works</a></h2>
+<ul>
+<li>Moves the <strong>signature (witness) data outside the main transaction</strong>.</li>
+<li><strong>New txid = Only inputs + outputs (excludes witness data).</strong></li>
+<li>Prevents <strong>txid changes</strong> even if the signature is modified.</li>
+</ul>
+<hr />
+<h2 id="-address-formats-after-segwit"><a class="header" href="#-address-formats-after-segwit">🔹 Address Formats After SegWit</a></h2>
+<h3 id="1-p2sh-pay-to-script-hash"><a class="header" href="#1-p2sh-pay-to-script-hash">1️⃣ <strong>P2SH (Pay-to-Script-Hash)</strong></a></h3>
+<ul>
+<li>Starts with <code>3</code> (e.g., <code>3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC</code>).</li>
+<li>Legacy way of using SegWit inside a standard script hash.</li>
+</ul>
+<h3 id="2-p2wsh-pay-to-witness-script-hash"><a class="header" href="#2-p2wsh-pay-to-witness-script-hash">2️⃣ <strong>P2WSH (Pay-to-Witness-Script-Hash)</strong></a></h3>
+<ul>
+<li>Starts with <code>bc1q</code> (e.g., <code>bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</code>).</li>
+<li>Fully native SegWit, lower fees.</li>
+</ul>
+<hr />
+<h2 id="-benefits-of-segwit"><a class="header" href="#-benefits-of-segwit">🔹 Benefits of SegWit</a></h2>
+<p>✅ Fixes <strong>transaction malleability</strong> (prevents txid changes).<br />
+✅ <strong>More transactions per block</strong> (improves scalability).<br />
+✅ <strong>Lower transaction fees</strong>.<br />
+✅ Enables <strong>Lightning Network</strong> (for faster, cheaper payments).</p>
+<hr />
+<h2 id="-segwit-adoption"><a class="header" href="#-segwit-adoption">🔹 SegWit Adoption</a></h2>
+<ul>
+<li>SegWit is <strong>optional</strong> → Not all wallets/exchanges use it.</li>
+<li><strong>Most wallets today support SegWit</strong> (e.g., Ledger, Trezor, Electrum).</li>
+<li>Some users still use <strong>Legacy (non-SegWit) addresses</strong>, leading to higher fees.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bech32-and-bech32m-encoding"><a class="header" href="#bech32-and-bech32m-encoding">Bech32 and Bech32m Encoding</a></h1>
 
                     </main>
 

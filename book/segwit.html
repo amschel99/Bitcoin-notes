@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Private keys and Public keys - Bitcoin notes</title>
+        <title>Segregated Witness (Segwit) - Bitcoin notes</title>
 
 
         <!-- Custom HTML head -->
@@ -152,76 +152,70 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="ecdsa-elliptic-curve-digital-signature-algorithm"><a class="header" href="#ecdsa-elliptic-curve-digital-signature-algorithm">ECDSA (Elliptic Curve Digital Signature Algorithm)</a></h1>
-<p>ECDSA is a cryptographic algorithm used for digital signatures. It relies on the mathematics of elliptic curves to provide security.</p>
-<h2 id="key-generation"><a class="header" href="#key-generation">Key Generation</a></h2>
-<ol>
-<li>A point <code>G</code> on the elliptic curve is chosen and agreed upon.</li>
-<li>To generate a private key, a random number <code>k</code> is chosen such that <code>1 &lt;= k &lt;= n-1</code>, where <code>n</code> is the order of the base point <code>G</code>. <code>k</code> is typically 32 bytes long.</li>
-<li>The public key <code>K</code> is computed by multiplying <code>G</code> by <code>k</code>:
-[
-K = G \cdot k
-]
-Since <code>K</code> is a point on the curve, it has <code>x</code> and <code>y</code> coordinates, making it 64 bytes long (32 bytes for <code>x</code> and 32 bytes for <code>y</code>).</li>
-</ol>
-<h3 id="discrete-logarithm-problem"><a class="header" href="#discrete-logarithm-problem">Discrete Logarithm Problem</a></h3>
-<p>You cannot determine <code>k</code> from <code>G</code> and <code>K</code> because division is not defined on elliptic curves. This is known as the <strong>Discrete Logarithm Problem</strong>, which forms the foundation of elliptic curve cryptography's security.</p>
-<hr />
-<h2 id="compressed-public-keys"><a class="header" href="#compressed-public-keys">Compressed Public Keys</a></h2>
-<p>The public key is typically 64 bytes long. An additional prefix byte is added, making the total size 65 bytes. However, the public key can be compressed to reduce its size.</p>
-<h3 id="how-compression-works"><a class="header" href="#how-compression-works">How Compression Works</a></h3>
+                        <h1 id="segwit-segregated-witness"><a class="header" href="#segwit-segregated-witness">SegWit (Segregated Witness)</a></h1>
+<h2 id="-what-is-segwit"><a class="header" href="#-what-is-segwit">🔹 What is SegWit?</a></h2>
 <ul>
-<li>A public key is a point <code>(x, y)</code> on the elliptic curve.</li>
-<li>If we know <code>x</code>, we can calculate <code>y</code> using the curve's equation. For example, in Bitcoin, the curve equation is:
-[
-y^2 \mod p = (x^3 + 7) \mod p
-]</li>
-<li>Instead of storing both <code>x</code> and <code>y</code>, we can store only the <code>x</code> coordinate (32 bytes) and a prefix byte, making the public key 33 bytes long. This reduces the size by almost 50%.</li>
-</ul>
-<h3 id="prefix-bytes"><a class="header" href="#prefix-bytes">Prefix Bytes</a></h3>
-<ul>
-<li><strong>Uncompressed Public Keys</strong>: Have a prefix of <code>04</code>. This indicates that both <code>x</code> and <code>y</code> coordinates are included.</li>
-<li><strong>Compressed Public Keys</strong>: Have a prefix of either <code>02</code> or <code>03</code>. The prefix depends on whether the <code>y</code> coordinate is positive (<code>02</code>) or negative (<code>03</code>).</li>
+<li><strong>SegWit = Segregated Witness</strong></li>
+<li>It was a Bitcoin upgrade in <strong>2017</strong>.</li>
+<li><strong>Separates signature (witness data) from transaction data.</strong></li>
+<li>Helps fix <strong>transaction malleability</strong> and improves Bitcoin scalability.</li>
 </ul>
 <hr />
-<h2 id="mermaid-diagrams"><a class="header" href="#mermaid-diagrams">Mermaid Diagrams</a></h2>
-<h3 id="key-generation-process"><a class="header" href="#key-generation-process">Key Generation Process</a></h3>
-<pre class="mermaid">
-graph TD
-    A[Choose Base Point G] --&gt; B[Generate Private Key k]
-    B --&gt; C[Compute Public Key K = G * k]
-    C --&gt; D[Public Key K is a point on the curve with x and y coordinates]
-
-</pre>
-<h2 id="compressed-vs-uncompressed-public-keys"><a class="header" href="#compressed-vs-uncompressed-public-keys">Compressed vs Uncompressed Public Keys</a></h2>
-<pre class="mermaid">
-graph TD
-    A[Public Key] --&gt; B{Compressed?}
-    B --&gt;|Yes| C[Store x , Prefix 02 or 03]
-    B --&gt;|No| D[Store x, y, and Prefix 04]
-</pre>
-<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
+<h2 id="-why-was-segwit-needed"><a class="header" href="#-why-was-segwit-needed">🔹 Why Was SegWit Needed?</a></h2>
+<h3 id="-transaction-malleability-fix"><a class="header" href="#-transaction-malleability-fix">✅ Transaction Malleability Fix</a></h3>
 <ul>
-<li><strong>Private Key</strong>: A random number <code>k</code> (32 bytes).</li>
-<li><strong>Public Key</strong>: A point <code>K = G * k</code> on the elliptic curve (64 bytes uncompressed, 33 bytes compressed).</li>
-<li><strong>Compression</strong>: Reduces public key size by storing only the <code>x</code> coordinate and a prefix byte.</li>
-<li><strong>Prefixes</strong>:
-<ul>
-<li><code>04</code>: Uncompressed public key.</li>
-<li><code>02</code> or <code>03</code>: Compressed public key (depending on the sign of <code>y</code>).</li>
+<li>Before SegWit, <strong>txid (transaction ID) included the signature</strong>.</li>
+<li>Attackers could <strong>modify the signature</strong> → <strong>Change txid</strong> without changing the transaction.</li>
+<li>This caused issues for <strong>Lightning Network</strong> and Bitcoin apps.</li>
+<li><strong>SegWit removes signatures from the txid calculation</strong>, fixing this issue.</li>
 </ul>
-</li>
+<h3 id="-more-transactions-per-block"><a class="header" href="#-more-transactions-per-block">✅ More Transactions per Block</a></h3>
+<ul>
+<li><strong>Transactions become smaller</strong> → <strong>More transactions fit in a block</strong>.</li>
+<li><strong>Lower fees</strong> and <strong>faster confirmations</strong>.</li>
+</ul>
+<hr />
+<h2 id="-how-segwit-works"><a class="header" href="#-how-segwit-works">🔹 How SegWit Works</a></h2>
+<ul>
+<li>Moves the <strong>signature (witness) data outside the main transaction</strong>.</li>
+<li><strong>New txid = Only inputs + outputs (excludes witness data).</strong></li>
+<li>Prevents <strong>txid changes</strong> even if the signature is modified.</li>
+</ul>
+<hr />
+<h2 id="-address-formats-after-segwit"><a class="header" href="#-address-formats-after-segwit">🔹 Address Formats After SegWit</a></h2>
+<h3 id="1-p2sh-pay-to-script-hash"><a class="header" href="#1-p2sh-pay-to-script-hash">1️⃣ <strong>P2SH (Pay-to-Script-Hash)</strong></a></h3>
+<ul>
+<li>Starts with <code>3</code> (e.g., <code>3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC</code>).</li>
+<li>Legacy way of using SegWit inside a standard script hash.</li>
+</ul>
+<h3 id="2-p2wsh-pay-to-witness-script-hash"><a class="header" href="#2-p2wsh-pay-to-witness-script-hash">2️⃣ <strong>P2WSH (Pay-to-Witness-Script-Hash)</strong></a></h3>
+<ul>
+<li>Starts with <code>bc1q</code> (e.g., <code>bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</code>).</li>
+<li>Fully native SegWit, lower fees.</li>
+</ul>
+<hr />
+<h2 id="-benefits-of-segwit"><a class="header" href="#-benefits-of-segwit">🔹 Benefits of SegWit</a></h2>
+<p>✅ Fixes <strong>transaction malleability</strong> (prevents txid changes).<br />
+✅ <strong>More transactions per block</strong> (improves scalability).<br />
+✅ <strong>Lower transaction fees</strong>.<br />
+✅ Enables <strong>Lightning Network</strong> (for faster, cheaper payments).</p>
+<hr />
+<h2 id="-segwit-adoption"><a class="header" href="#-segwit-adoption">🔹 SegWit Adoption</a></h2>
+<ul>
+<li>SegWit is <strong>optional</strong> → Not all wallets/exchanges use it.</li>
+<li><strong>Most wallets today support SegWit</strong> (e.g., Ledger, Trezor, Electrum).</li>
+<li>Some users still use <strong>Legacy (non-SegWit) addresses</strong>, leading to higher fees.</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="base58-encoding.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="keys.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="segwit.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="bech32m.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -231,11 +225,11 @@ graph TD
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="base58-encoding.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="keys.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="segwit.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="bech32m.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

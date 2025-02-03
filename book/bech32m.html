@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Private keys and Public keys - Bitcoin notes</title>
+        <title>Bech32 and Bech32m Encoding - Bitcoin notes</title>
 
 
         <!-- Custom HTML head -->
@@ -152,78 +152,16 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="ecdsa-elliptic-curve-digital-signature-algorithm"><a class="header" href="#ecdsa-elliptic-curve-digital-signature-algorithm">ECDSA (Elliptic Curve Digital Signature Algorithm)</a></h1>
-<p>ECDSA is a cryptographic algorithm used for digital signatures. It relies on the mathematics of elliptic curves to provide security.</p>
-<h2 id="key-generation"><a class="header" href="#key-generation">Key Generation</a></h2>
-<ol>
-<li>A point <code>G</code> on the elliptic curve is chosen and agreed upon.</li>
-<li>To generate a private key, a random number <code>k</code> is chosen such that <code>1 &lt;= k &lt;= n-1</code>, where <code>n</code> is the order of the base point <code>G</code>. <code>k</code> is typically 32 bytes long.</li>
-<li>The public key <code>K</code> is computed by multiplying <code>G</code> by <code>k</code>:
-[
-K = G \cdot k
-]
-Since <code>K</code> is a point on the curve, it has <code>x</code> and <code>y</code> coordinates, making it 64 bytes long (32 bytes for <code>x</code> and 32 bytes for <code>y</code>).</li>
-</ol>
-<h3 id="discrete-logarithm-problem"><a class="header" href="#discrete-logarithm-problem">Discrete Logarithm Problem</a></h3>
-<p>You cannot determine <code>k</code> from <code>G</code> and <code>K</code> because division is not defined on elliptic curves. This is known as the <strong>Discrete Logarithm Problem</strong>, which forms the foundation of elliptic curve cryptography's security.</p>
-<hr />
-<h2 id="compressed-public-keys"><a class="header" href="#compressed-public-keys">Compressed Public Keys</a></h2>
-<p>The public key is typically 64 bytes long. An additional prefix byte is added, making the total size 65 bytes. However, the public key can be compressed to reduce its size.</p>
-<h3 id="how-compression-works"><a class="header" href="#how-compression-works">How Compression Works</a></h3>
-<ul>
-<li>A public key is a point <code>(x, y)</code> on the elliptic curve.</li>
-<li>If we know <code>x</code>, we can calculate <code>y</code> using the curve's equation. For example, in Bitcoin, the curve equation is:
-[
-y^2 \mod p = (x^3 + 7) \mod p
-]</li>
-<li>Instead of storing both <code>x</code> and <code>y</code>, we can store only the <code>x</code> coordinate (32 bytes) and a prefix byte, making the public key 33 bytes long. This reduces the size by almost 50%.</li>
-</ul>
-<h3 id="prefix-bytes"><a class="header" href="#prefix-bytes">Prefix Bytes</a></h3>
-<ul>
-<li><strong>Uncompressed Public Keys</strong>: Have a prefix of <code>04</code>. This indicates that both <code>x</code> and <code>y</code> coordinates are included.</li>
-<li><strong>Compressed Public Keys</strong>: Have a prefix of either <code>02</code> or <code>03</code>. The prefix depends on whether the <code>y</code> coordinate is positive (<code>02</code>) or negative (<code>03</code>).</li>
-</ul>
-<hr />
-<h2 id="mermaid-diagrams"><a class="header" href="#mermaid-diagrams">Mermaid Diagrams</a></h2>
-<h3 id="key-generation-process"><a class="header" href="#key-generation-process">Key Generation Process</a></h3>
-<pre class="mermaid">
-graph TD
-    A[Choose Base Point G] --&gt; B[Generate Private Key k]
-    B --&gt; C[Compute Public Key K = G * k]
-    C --&gt; D[Public Key K is a point on the curve with x and y coordinates]
-
-</pre>
-<h2 id="compressed-vs-uncompressed-public-keys"><a class="header" href="#compressed-vs-uncompressed-public-keys">Compressed vs Uncompressed Public Keys</a></h2>
-<pre class="mermaid">
-graph TD
-    A[Public Key] --&gt; B{Compressed?}
-    B --&gt;|Yes| C[Store x , Prefix 02 or 03]
-    B --&gt;|No| D[Store x, y, and Prefix 04]
-</pre>
-<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
-<ul>
-<li><strong>Private Key</strong>: A random number <code>k</code> (32 bytes).</li>
-<li><strong>Public Key</strong>: A point <code>K = G * k</code> on the elliptic curve (64 bytes uncompressed, 33 bytes compressed).</li>
-<li><strong>Compression</strong>: Reduces public key size by storing only the <code>x</code> coordinate and a prefix byte.</li>
-<li><strong>Prefixes</strong>:
-<ul>
-<li><code>04</code>: Uncompressed public key.</li>
-<li><code>02</code> or <code>03</code>: Compressed public key (depending on the sign of <code>y</code>).</li>
-</ul>
-</li>
-</ul>
+                        <h1 id="bech32-and-bech32m-encoding"><a class="header" href="#bech32-and-bech32m-encoding">Bech32 and Bech32m Encoding</a></h1>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="base58-encoding.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="segwit.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="segwit.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -231,13 +169,10 @@ graph TD
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="base58-encoding.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="segwit.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="segwit.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>
