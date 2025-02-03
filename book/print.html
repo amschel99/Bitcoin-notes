@@ -320,7 +320,72 @@ graph TD
 <li><strong>Most wallets today support SegWit</strong> (e.g., Ledger, Trezor, Electrum).</li>
 <li>Some users still use <strong>Legacy (non-SegWit) addresses</strong>, leading to higher fees.</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="bech32-and-bech32m-encoding"><a class="header" href="#bech32-and-bech32m-encoding">Bech32 and Bech32m Encoding</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bech32m-encoding"><a class="header" href="#bech32m-encoding">Bech32m Encoding</a></h1>
+<p>An address is an encoded output script.</p>
+<hr />
+<h2 id="structure-of-a-bech32m-address"><a class="header" href="#structure-of-a-bech32m-address">Structure of a Bech32m Address</a></h2>
+<h3 id="components"><a class="header" href="#components">Components:</a></h3>
+<ol>
+<li><strong>Human-Readable Part (HRP)</strong>:
+<ul>
+<li>Prefix agreed by the network (e.g., <code>bc</code> for Bitcoin mainnet, <code>tb</code> for testnet).</li>
+</ul>
+</li>
+<li><strong>Separator</strong>: <code>1</code></li>
+<li><strong>Data Part</strong>:
+<ul>
+<li>Witness Version</li>
+<li>Witness Program</li>
+<li>Checksum</li>
+</ul>
+</li>
+</ol>
+<pre class="mermaid">flowchart TD
+    A[&quot;HRP (e.g., bc)&quot;] --&gt; B[&quot;Separator 1&quot;]
+    B --&gt; C[&quot;Witness Version (e.g., q/p)&quot;]
+    C --&gt; D[&quot;Witness Program (20-40 bytes)&quot;]
+    D --&gt; E[&quot;Checksum (6 chars)&quot;]
+</pre>
+<h2 id="data-part-details"><a class="header" href="#data-part-details">Data Part Details</a></h2>
+<h3 id="1-witness-version"><a class="header" href="#1-witness-version">1. Witness Version</a></h3>
+<ul>
+<li>Encoded as <strong>1 character</strong> (<code>q</code> = SegWit v0, <code>p</code> = SegWit v1).</li>
+<li>Values: 0–16 (17 possible versions).</li>
+</ul>
+<h3 id="2-witness-program"><a class="header" href="#2-witness-program">2. Witness Program</a></h3>
+<ul>
+<li><strong>Length</strong>: 2–40 bytes.
+<ul>
+<li><strong>SegWit v0</strong>: 20 or 32 bytes (P2WPKH/P2WSH).</li>
+<li><strong>SegWit v1 (Taproot)</strong>: 32 bytes.</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-checksum"><a class="header" href="#3-checksum">3. Checksum</a></h3>
+<ul>
+<li>6 characters generated using a BCH code (error detection only).</li>
+</ul>
+<hr />
+<h2 id="address-construction"><a class="header" href="#address-construction">Address Construction</a></h2>
+<h3 id="p2wpkh-segwit-v0"><a class="header" href="#p2wpkh-segwit-v0">P2WPKH (SegWit v0)</a></h3>
+<ol>
+<li><strong>HRP</strong>: <code>bc</code> (mainnet) or <code>tb</code> (testnet).</li>
+<li><strong>Witness Version</strong>: <code>q</code> (version 0).</li>
+<li><strong>Witness Program</strong>: <code>RIPEMD160(SHA256(public_key))</code> (20 bytes).</li>
+<li><strong>Checksum</strong>: BCH-generated.</li>
+</ol>
+<pre class="mermaid">flowchart LR
+    A[Public Key] --&gt; B[SHA256] --&gt; C[RIPEMD160] --&gt; D[Witness Program]
+    D --&gt; E[bc1 + q + Witness Program + Checksum]
+</pre>
+<h2 id="pay-to-witness-script-hash-p2wsh-output"><a class="header" href="#pay-to-witness-script-hash-p2wsh-output">Pay to Witness Script Hash (P2WSH) Output</a></h2>
+<p>For the <strong>pay to witness script hash (P2WSH)</strong> output, we don’t use the P2SH algorithm. Instead, we take the script, pass it into a <strong>SHA256</strong> hash function, and use the <strong>32-byte digest</strong> of that function in the witness program.</p>
+<p>For <strong>P2SH</strong>, the SHA256 digest was hashed again with <strong>RIPEMD-160</strong>, but that may not be secure in some cases; for details, see <a href="bech32m.html#">P2SH Collision Attacks</a>.</p>
+<p>A result of using SHA256 without RIPEMD-160 is that <strong>P2WSH commitments are 32 bytes (256 bits) instead of 20 bytes (160 bits)</strong>.</p>
+<hr />
+<h2 id="pay-to-taproot-p2tr-output"><a class="header" href="#pay-to-taproot-p2tr-output">Pay to Taproot (P2TR) Output</a></h2>
+<p>For the <strong>pay-to-taproot (P2TR)</strong> output, the witness program is a <strong>point on the secp256k1 curve</strong>.</p>
+<p>It may be a simple public key, but in most cases, it should be a <strong>public key that commits to some additional data</strong>.</p>
 
                     </main>
 
