@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Bech32m addresses - Bitcoin notes</title>
+        <title>Private keys - Bitcoin notes</title>
 
 
         <!-- Custom HTML head -->
@@ -152,84 +152,105 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="bech32m-encoding"><a class="header" href="#bech32m-encoding">Bech32m Encoding</a></h1>
-<p>An address is an encoded output script.</p>
+                        <h2 id="private-key-formats"><a class="header" href="#private-key-formats">Private Key Formats</a></h2>
+<p>A private key can be represented in different formats, all corresponding to the same 256-bit number.</p>
+<h3 id="common-private-key-formats"><a class="header" href="#common-private-key-formats">Common Private Key Formats</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Type</th><th>Prefix</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>Hex</strong></td><td>None</td><td>64 hexadecimal digits</td></tr>
+<tr><td><strong>WIF</strong></td><td>5</td><td>Base58check encoding (base58 with version prefix of 128 and 32-bit checksum)</td></tr>
+<tr><td><strong>WIF-compressed</strong></td><td>K or L</td><td>Same as WIF but with added suffix <code>0x01</code> before encoding</td></tr>
+</tbody></table>
+</div>
 <hr />
-<h2 id="structure-of-a-bech32m-address"><a class="header" href="#structure-of-a-bech32m-address">Structure of a Bech32m Address</a></h2>
-<h3 id="components"><a class="header" href="#components">Components:</a></h3>
-<ol>
-<li><strong>Human-Readable Part (HRP)</strong>:
+<h2 id="modern-relevancy-of-private-key-formats"><a class="header" href="#modern-relevancy-of-private-key-formats">Modern Relevancy of Private Key Formats</a></h2>
 <ul>
-<li>Prefix agreed by the network (e.g., <code>bc</code> for Bitcoin mainnet, <code>tb</code> for testnet).</li>
-</ul>
-</li>
-<li><strong>Separator</strong>: <code>1</code></li>
-<li><strong>Data Part</strong>:
-<ul>
-<li>Witness Version</li>
-<li>Witness Program</li>
-<li>Checksum</li>
-</ul>
-</li>
-</ol>
-<pre class="mermaid">flowchart TD
-    A[&quot;HRP (e.g., bc)&quot;] --&gt; B[&quot;Separator 1&quot;]
-    B --&gt; C[&quot;Witness Version (e.g., q/p)&quot;]
-    C --&gt; D[&quot;Witness Program (20-40 bytes)&quot;]
-    D --&gt; E[&quot;Checksum (6 chars)&quot;]
-</pre>
-<h2 id="data-part-details"><a class="header" href="#data-part-details">Data Part Details</a></h2>
-<h3 id="1-witness-version"><a class="header" href="#1-witness-version">1. Witness Version</a></h3>
-<ul>
-<li>Encoded as <strong>1 character</strong> (<code>q</code> = SegWit v0, <code>p</code> = SegWit v1).</li>
-<li>Values: 0–16 (17 possible versions).</li>
-</ul>
-<h3 id="2-witness-program"><a class="header" href="#2-witness-program">2. Witness Program</a></h3>
-<ul>
-<li><strong>Length</strong>: 2–40 bytes.
-<ul>
-<li><strong>SegWit v0</strong>: 20 or 32 bytes (P2WPKH/P2WSH).</li>
-<li><strong>SegWit v1 (Taproot)</strong>: 32 bytes.</li>
-</ul>
-</li>
-</ul>
-<h3 id="3-checksum"><a class="header" href="#3-checksum">3. Checksum</a></h3>
-<ul>
-<li>6 characters generated using a BCH code (error detection only).</li>
+<li>Early Bitcoin wallets generated independent private keys and required frequent backups.</li>
+<li>Modern wallets use <strong>deterministic wallets</strong>, generating all private keys from a single <strong>seed value</strong>.</li>
+<li><strong>Deterministic wallets</strong> only need a single backup.</li>
+<li><strong>Security concern:</strong> If an attacker acquires a single exported key plus some wallet metadata, they may derive all keys in the wallet.</li>
+<li><strong>No modern wallets support individual key import/export</strong> due to security risks.</li>
 </ul>
 <hr />
-<h2 id="address-construction"><a class="header" href="#address-construction">Address Construction</a></h2>
-<h3 id="p2wpkh-segwit-v0"><a class="header" href="#p2wpkh-segwit-v0">P2WPKH (SegWit v0)</a></h3>
-<ol>
-<li><strong>HRP</strong>: <code>bc</code> (mainnet) or <code>tb</code> (testnet).</li>
-<li><strong>Witness Version</strong>: <code>q</code> (version 0).</li>
-<li><strong>Witness Program</strong>: <code>RIPEMD160(SHA256(public_key))</code> (20 bytes).</li>
-<li><strong>Checksum</strong>: BCH-generated.</li>
-</ol>
-<pre class="mermaid">flowchart LR
-    A[Public Key] --&gt; B[SHA256] --&gt; C[RIPEMD160] --&gt; D[Witness Program]
-    D --&gt; E[bc1 + q + Witness Program + Checksum]
-</pre>
-<h2 id="pay-to-witness-script-hash-p2wsh-output"><a class="header" href="#pay-to-witness-script-hash-p2wsh-output">Pay to Witness Script Hash (P2WSH) Output</a></h2>
-<p>For the <strong>pay to witness script hash (P2WSH)</strong> output, we don’t use the P2SH algorithm. Instead, we take the script, pass it into a <strong>SHA256</strong> hash function, and use the <strong>32-byte digest</strong> of that function in the witness program.</p>
-<p>For <strong>P2SH</strong>, the SHA256 digest was hashed again with <strong>RIPEMD-160</strong>, but that may not be secure in some cases; for details, see <a href="#">P2SH Collision Attacks</a>.</p>
-<p>A result of using SHA256 without RIPEMD-160 is that <strong>P2WSH commitments are 32 bytes (256 bits) instead of 20 bytes (160 bits)</strong>.</p>
+<h2 id="example-same-key-in-different-formats"><a class="header" href="#example-same-key-in-different-formats">Example: Same Key in Different Formats</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Format</th><th>Private Key</th></tr></thead><tbody>
+<tr><td><strong>Hex</strong></td><td><code>1e99423a4ed27608a15a2616a2b0e9e52ced330ac530edcc32c8ffc6a526aedd</code></td></tr>
+<tr><td><strong>WIF</strong></td><td><code>5J3mBbAH58CpQ3Y5RNJpUKPE62SQ5tfcvU2JpbnkeyhfsYB1Jcn</code></td></tr>
+<tr><td><strong>WIF-compressed</strong></td><td><code>KxFC1jmwwCoACiCAWZ3eXa96mBM6tb3TYzGmf6YwgdGWZgawvrtJ</code></td></tr>
+</tbody></table>
+</div>
+<p>Each format represents the same key in different ways and can be converted into another format easily.</p>
 <hr />
-<h2 id="pay-to-taproot-p2tr-output"><a class="header" href="#pay-to-taproot-p2tr-output">Pay to Taproot (P2TR) Output</a></h2>
-<p>For the <strong>pay-to-taproot (P2TR)</strong> output, the witness program is a <strong>point on the secp256k1 curve</strong>.</p>
-<p>It may be a simple public key, but in most cases, it should be a <strong>public key that commits to some additional data</strong>.</p>
+<h2 id="compressed-private-keys"><a class="header" href="#compressed-private-keys">Compressed Private Keys</a></h2>
+<ul>
+<li><strong>Misnomer:</strong> A "compressed private key" is actually <strong>longer</strong> than an uncompressed private key.</li>
+<li>The extra byte (<code>0x01</code>) <strong>signals</strong> that only compressed public keys should be derived from it.</li>
+<li>Modern wallets <strong>only</strong> export WIF-compressed private keys (<code>K</code> or <code>L</code> prefix).</li>
+<li><strong>Old wallets</strong> export WIF (uncompressed) keys (<code>5</code> prefix).</li>
+</ul>
+<h3 id="example-wif-vs-wif-compressed"><a class="header" href="#example-wif-vs-wif-compressed">Example: WIF vs WIF-Compressed</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Format</th><th>Private Key</th></tr></thead><tbody>
+<tr><td><strong>Hex</strong></td><td><code>1E99423A4ED27608A15A2616A2B0E9E52CED330AC530EDCC32C8FFC6A526AEDD</code></td></tr>
+<tr><td><strong>WIF</strong></td><td><code>5J3mBbAH58CpQ3Y5RNJpUKPE62SQ5tfcvU2JpbnkeyhfsYB1Jcn</code></td></tr>
+<tr><td><strong>Hex-compressed</strong></td><td><code>1E99423A4ED27608A15A2616A2B0E9E52CED330AC530EDCC32C8FFC6A526AEDD01</code></td></tr>
+<tr><td><strong>WIF-compressed</strong></td><td><code>KxFC1jmwwCoACiCAWZ3eXa96mBM6tb3TYzGmf6YwgdGWZgawvrtJ</code></td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="vanity-addresses"><a class="header" href="#vanity-addresses">Vanity Addresses</a></h2>
+<ul>
+<li><strong>Vanity addresses</strong> are Bitcoin addresses with custom patterns (e.g., <code>1LoveBPzzD...</code>).</li>
+<li>They require generating and testing <strong>billions</strong> of private keys until a match is found.</li>
+<li><strong>Security:</strong> They are <strong>as secure</strong> as regular addresses but require brute-force computation.</li>
+<li><strong>Privacy Risk:</strong> They encourage address reuse, which can reduce financial privacy.</li>
+</ul>
+<h3 id="example-vanity-address-search-times"><a class="header" href="#example-vanity-address-search-times">Example: Vanity Address Search Times</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Length</th><th>Pattern</th><th>Probability</th><th>Avg. Search Time (Desktop)</th></tr></thead><tbody>
+<tr><td>1</td><td><code>1K</code></td><td>1 in 58</td><td>&lt;1 ms</td></tr>
+<tr><td>4</td><td><code>1Kids</code></td><td>1 in 11M</td><td>1 min</td></tr>
+<tr><td>7</td><td><code>1KidsCha</code></td><td>1 in 2.2T</td><td>3-4 months</td></tr>
+<tr><td>10</td><td><code>1KidsCharit</code></td><td>1 in 400Q</td><td>46,000 years</td></tr>
+</tbody></table>
+</div>
+<ul>
+<li><strong>Specialized GPUs</strong> are required for patterns longer than 7 characters.</li>
+<li><strong>Vanity pools</strong> exist, where miners generate vanity addresses for a fee.</li>
+</ul>
+<hr />
+<h2 id="paper-wallets-obsolete"><a class="header" href="#paper-wallets-obsolete">Paper Wallets (OBSOLETE!)</a></h2>
+<blockquote>
+<p><strong>Warning:</strong> Paper wallets are <strong>obsolete and dangerous</strong> due to security risks.</p>
+</blockquote>
+<ul>
+<li>Private keys printed on paper for offline storage.</li>
+<li>Often include the corresponding Bitcoin address.</li>
+<li>Risks:
+<ul>
+<li>Many were compromised by malicious generators.</li>
+<li>Easily lost, stolen, or destroyed.</li>
+<li>Should <strong>not</strong> be used for storing Bitcoin.</li>
+<li><strong>Better alternative:</strong> Hardware wallets &amp; seed phrase backups.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3 id="summary"><a class="header" href="#summary">Summary</a></h3>
+<ul>
+<li><strong>Private keys</strong> can be stored in different formats, with WIF and WIF-compressed being common.</li>
+<li><strong>Modern wallets use deterministic seeds</strong> and <strong>do not allow</strong> individual key import/export.</li>
+<li><strong>Compressed keys</strong> refer to <strong>public keys</strong>, not private keys.</li>
+<li><strong>Vanity addresses</strong> are impractical for long patterns but were popular in Bitcoin’s early days.</li>
+<li><strong>Paper wallets are insecure</strong> and should be avoided.</li>
+</ul>
+<p>For safe Bitcoin storage, use <strong>deterministic wallets</strong> and <strong>hardware devices</strong> instead of exporting/importing private keys.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="segwit.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="bech32m.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="private-keys.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -237,13 +258,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="segwit.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="bech32m.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="private-keys.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

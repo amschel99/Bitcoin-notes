@@ -8,7 +8,7 @@ class MDBookSidebarScrollbox extends HTMLElement {
         super();
     }
     connectedCallback() {
-        this.innerHTML = '<ol class="chapter"><li class="chapter-item expanded "><a href="base58-encoding.html"><strong aria-hidden="true">1.</strong> Base58 Encoding in Bitcoin</a></li><li class="chapter-item expanded "><a href="keys.html"><strong aria-hidden="true">2.</strong> Private keys and Public keys</a></li><li class="chapter-item expanded "><a href="segwit.html"><strong aria-hidden="true">3.</strong> Segregated Witness (Segwit)</a></li><li class="chapter-item expanded "><a href="bech32m.html"><strong aria-hidden="true">4.</strong> Bech32m addresses</a></li></ol>';
+        this.innerHTML = '<ol class="chapter"><li class="chapter-item expanded "><a href="base58-encoding.html"><strong aria-hidden="true">1.</strong> Base58 Encoding in Bitcoin</a></li><li class="chapter-item expanded "><a href="keys.html"><strong aria-hidden="true">2.</strong> Private keys and Public keys</a></li><li class="chapter-item expanded "><a href="segwit.html"><strong aria-hidden="true">3.</strong> Segregated Witness (Segwit)</a></li><li class="chapter-item expanded "><a href="bech32m.html"><strong aria-hidden="true">4.</strong> Bech32m addresses</a></li><li class="chapter-item expanded "><a href="private-keys.html"><strong aria-hidden="true">5.</strong> Private keys</a></li></ol>';
         // Set the current, active page, and reveal it if it's hidden
         let current_page = document.location.href.toString().split("#")[0];
         if (current_page.endsWith("/")) {

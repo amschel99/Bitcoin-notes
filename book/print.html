@@ -386,6 +386,96 @@ graph TD
 <h2 id="pay-to-taproot-p2tr-output"><a class="header" href="#pay-to-taproot-p2tr-output">Pay to Taproot (P2TR) Output</a></h2>
 <p>For the <strong>pay-to-taproot (P2TR)</strong> output, the witness program is a <strong>point on the secp256k1 curve</strong>.</p>
 <p>It may be a simple public key, but in most cases, it should be a <strong>public key that commits to some additional data</strong>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="private-key-formats"><a class="header" href="#private-key-formats">Private Key Formats</a></h2>
+<p>A private key can be represented in different formats, all corresponding to the same 256-bit number.</p>
+<h3 id="common-private-key-formats"><a class="header" href="#common-private-key-formats">Common Private Key Formats</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Type</th><th>Prefix</th><th>Description</th></tr></thead><tbody>
+<tr><td><strong>Hex</strong></td><td>None</td><td>64 hexadecimal digits</td></tr>
+<tr><td><strong>WIF</strong></td><td>5</td><td>Base58check encoding (base58 with version prefix of 128 and 32-bit checksum)</td></tr>
+<tr><td><strong>WIF-compressed</strong></td><td>K or L</td><td>Same as WIF but with added suffix <code>0x01</code> before encoding</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="modern-relevancy-of-private-key-formats"><a class="header" href="#modern-relevancy-of-private-key-formats">Modern Relevancy of Private Key Formats</a></h2>
+<ul>
+<li>Early Bitcoin wallets generated independent private keys and required frequent backups.</li>
+<li>Modern wallets use <strong>deterministic wallets</strong>, generating all private keys from a single <strong>seed value</strong>.</li>
+<li><strong>Deterministic wallets</strong> only need a single backup.</li>
+<li><strong>Security concern:</strong> If an attacker acquires a single exported key plus some wallet metadata, they may derive all keys in the wallet.</li>
+<li><strong>No modern wallets support individual key import/export</strong> due to security risks.</li>
+</ul>
+<hr />
+<h2 id="example-same-key-in-different-formats"><a class="header" href="#example-same-key-in-different-formats">Example: Same Key in Different Formats</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Format</th><th>Private Key</th></tr></thead><tbody>
+<tr><td><strong>Hex</strong></td><td><code>1e99423a4ed27608a15a2616a2b0e9e52ced330ac530edcc32c8ffc6a526aedd</code></td></tr>
+<tr><td><strong>WIF</strong></td><td><code>5J3mBbAH58CpQ3Y5RNJpUKPE62SQ5tfcvU2JpbnkeyhfsYB1Jcn</code></td></tr>
+<tr><td><strong>WIF-compressed</strong></td><td><code>KxFC1jmwwCoACiCAWZ3eXa96mBM6tb3TYzGmf6YwgdGWZgawvrtJ</code></td></tr>
+</tbody></table>
+</div>
+<p>Each format represents the same key in different ways and can be converted into another format easily.</p>
+<hr />
+<h2 id="compressed-private-keys"><a class="header" href="#compressed-private-keys">Compressed Private Keys</a></h2>
+<ul>
+<li><strong>Misnomer:</strong> A "compressed private key" is actually <strong>longer</strong> than an uncompressed private key.</li>
+<li>The extra byte (<code>0x01</code>) <strong>signals</strong> that only compressed public keys should be derived from it.</li>
+<li>Modern wallets <strong>only</strong> export WIF-compressed private keys (<code>K</code> or <code>L</code> prefix).</li>
+<li><strong>Old wallets</strong> export WIF (uncompressed) keys (<code>5</code> prefix).</li>
+</ul>
+<h3 id="example-wif-vs-wif-compressed"><a class="header" href="#example-wif-vs-wif-compressed">Example: WIF vs WIF-Compressed</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Format</th><th>Private Key</th></tr></thead><tbody>
+<tr><td><strong>Hex</strong></td><td><code>1E99423A4ED27608A15A2616A2B0E9E52CED330AC530EDCC32C8FFC6A526AEDD</code></td></tr>
+<tr><td><strong>WIF</strong></td><td><code>5J3mBbAH58CpQ3Y5RNJpUKPE62SQ5tfcvU2JpbnkeyhfsYB1Jcn</code></td></tr>
+<tr><td><strong>Hex-compressed</strong></td><td><code>1E99423A4ED27608A15A2616A2B0E9E52CED330AC530EDCC32C8FFC6A526AEDD01</code></td></tr>
+<tr><td><strong>WIF-compressed</strong></td><td><code>KxFC1jmwwCoACiCAWZ3eXa96mBM6tb3TYzGmf6YwgdGWZgawvrtJ</code></td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="vanity-addresses"><a class="header" href="#vanity-addresses">Vanity Addresses</a></h2>
+<ul>
+<li><strong>Vanity addresses</strong> are Bitcoin addresses with custom patterns (e.g., <code>1LoveBPzzD...</code>).</li>
+<li>They require generating and testing <strong>billions</strong> of private keys until a match is found.</li>
+<li><strong>Security:</strong> They are <strong>as secure</strong> as regular addresses but require brute-force computation.</li>
+<li><strong>Privacy Risk:</strong> They encourage address reuse, which can reduce financial privacy.</li>
+</ul>
+<h3 id="example-vanity-address-search-times"><a class="header" href="#example-vanity-address-search-times">Example: Vanity Address Search Times</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Length</th><th>Pattern</th><th>Probability</th><th>Avg. Search Time (Desktop)</th></tr></thead><tbody>
+<tr><td>1</td><td><code>1K</code></td><td>1 in 58</td><td>&lt;1 ms</td></tr>
+<tr><td>4</td><td><code>1Kids</code></td><td>1 in 11M</td><td>1 min</td></tr>
+<tr><td>7</td><td><code>1KidsCha</code></td><td>1 in 2.2T</td><td>3-4 months</td></tr>
+<tr><td>10</td><td><code>1KidsCharit</code></td><td>1 in 400Q</td><td>46,000 years</td></tr>
+</tbody></table>
+</div>
+<ul>
+<li><strong>Specialized GPUs</strong> are required for patterns longer than 7 characters.</li>
+<li><strong>Vanity pools</strong> exist, where miners generate vanity addresses for a fee.</li>
+</ul>
+<hr />
+<h2 id="paper-wallets-obsolete"><a class="header" href="#paper-wallets-obsolete">Paper Wallets (OBSOLETE!)</a></h2>
+<blockquote>
+<p><strong>Warning:</strong> Paper wallets are <strong>obsolete and dangerous</strong> due to security risks.</p>
+</blockquote>
+<ul>
+<li>Private keys printed on paper for offline storage.</li>
+<li>Often include the corresponding Bitcoin address.</li>
+<li>Risks:
+<ul>
+<li>Many were compromised by malicious generators.</li>
+<li>Easily lost, stolen, or destroyed.</li>
+<li>Should <strong>not</strong> be used for storing Bitcoin.</li>
+<li><strong>Better alternative:</strong> Hardware wallets &amp; seed phrase backups.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3 id="summary-2"><a class="header" href="#summary-2">Summary</a></h3>
+<ul>
+<li><strong>Private keys</strong> can be stored in different formats, with WIF and WIF-compressed being common.</li>
+<li><strong>Modern wallets use deterministic seeds</strong> and <strong>do not allow</strong> individual key import/export.</li>
+<li><strong>Compressed keys</strong> refer to <strong>public keys</strong>, not private keys.</li>
+<li><strong>Vanity addresses</strong> are impractical for long patterns but were popular in Bitcoin’s early days.</li>
+<li><strong>Paper wallets are insecure</strong> and should be avoided.</li>
+</ul>
+<p>For safe Bitcoin storage, use <strong>deterministic wallets</strong> and <strong>hardware devices</strong> instead of exporting/importing private keys.</p>
 
                     </main>
 
