@@ -4,3 +4,4 @@
 - [Private keys and Public keys](./keys.md)
 - [Segregated Witness (Segwit)](./segwit.md)
 - [Bech32m addresses](./bech32m.md)
+- [Private keys](./private-keys.md)
