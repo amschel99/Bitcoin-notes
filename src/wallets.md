@@ -119,10 +119,11 @@ BIP-32 allows two types of child key derivation:
 ```mermaid
 graph TD;
     P[Parent Public Key] -->|Index + Chain Code| HMAC[HMAC-SHA512]
-    HMAC -->|Left 256 bits (IL)| ADD[IL + Parent Private Key mod n]
+    HMAC -->|Left 256 bits IL| ADD[IL + Parent Private Key mod n]
     ADD --> C[Child Private Key]
-    HMAC -->|Right 256 bits (IR)| CC[New Chain Code]
+    HMAC -->|Right 256 bits IR| CC[New Chain Code]
     C --> CP[Child Public Key]
+
 ```
 - Uses **parent public key**, **index**, and **parent chain code**.
 - **Formula:**
@@ -140,9 +141,9 @@ graph TD;
 ```mermaid
 graph TD;
     PP[Parent Private Key] -->|Index + Chain Code| HMAC_H[HMAC-SHA512]
-    HMAC_H -->|Left 256 bits (IL)| ADD_H[IL + Parent Private Key mod n]
+    HMAC_H -->|Left 256 bits IL| ADD_H[IL + Parent Private Key mod n]
     ADD_H --> C_H[Child Private Key]
-    HMAC_H -->|Right 256 bits (IR)| CC_H[New Chain Code]
+    HMAC_H -->|Right 256 bits IR| CC_H[New Chain Code]
     C_H --> CP_H[Child Public Key]
 ```
 - Uses **parent private key**, **index**, and **parent chain code**.

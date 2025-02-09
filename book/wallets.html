@@ -268,10 +268,11 @@ Losing access to the seed means losing access to all associated private keys.</p
 <h3 id="normal-child-key-derivation"><a class="header" href="#normal-child-key-derivation"><strong>Normal Child Key Derivation</strong></a></h3>
 <pre class="mermaid">graph TD;
     P[Parent Public Key] --&gt;|Index + Chain Code| HMAC[HMAC-SHA512]
-    HMAC --&gt;|Left 256 bits (IL)| ADD[IL + Parent Private Key mod n]
+    HMAC --&gt;|Left 256 bits IL| ADD[IL + Parent Private Key mod n]
     ADD --&gt; C[Child Private Key]
-    HMAC --&gt;|Right 256 bits (IR)| CC[New Chain Code]
+    HMAC --&gt;|Right 256 bits IR| CC[New Chain Code]
     C --&gt; CP[Child Public Key]
+
 </pre>
 <ul>
 <li>Uses <strong>parent public key</strong>, <strong>index</strong>, and <strong>parent chain code</strong>.</li>
@@ -289,9 +290,9 @@ Losing access to the seed means losing access to all associated private keys.</p
 <h3 id="hardened-child-key-derivation"><a class="header" href="#hardened-child-key-derivation"><strong>Hardened Child Key Derivation</strong></a></h3>
 <pre class="mermaid">graph TD;
     PP[Parent Private Key] --&gt;|Index + Chain Code| HMAC_H[HMAC-SHA512]
-    HMAC_H --&gt;|Left 256 bits (IL)| ADD_H[IL + Parent Private Key mod n]
+    HMAC_H --&gt;|Left 256 bits IL| ADD_H[IL + Parent Private Key mod n]
     ADD_H --&gt; C_H[Child Private Key]
-    HMAC_H --&gt;|Right 256 bits (IR)| CC_H[New Chain Code]
+    HMAC_H --&gt;|Right 256 bits IR| CC_H[New Chain Code]
     C_H --&gt; CP_H[Child Public Key]
 </pre>
 <ul>
