@@ -493,69 +493,64 @@ $ seed=f1cc3bc03ef51cb43ee7844460fa5049e779e7425a6349c8e89dfbb0fd97bb73
 
 # Generate deterministic values
 $ for i in {0..2} ; do echo "$seed + $i" | sha256sum ; done
-# Deterministic Key Generation and HD Wallets
-
-## Deterministic Wallets
-If these derived values are used as private keys, they can always be regenerated using the seed.  
-A deterministic wallet can be backed up by storing just the **seed** and the **key generation algorithm**.
-
-## Public Child Key Derivation
-Elliptic Curve Cryptography (ECC) allows deriving a public key (**K**) from a private key (**k**) using a generator point (**G**):
-
-\[
+</code></pre>
+<h1 id="deterministic-key-generation-and-hd-wallets"><a class="header" href="#deterministic-key-generation-and-hd-wallets">Deterministic Key Generation and HD Wallets</a></h1>
+<h2 id="deterministic-wallets"><a class="header" href="#deterministic-wallets">Deterministic Wallets</a></h2>
+<p>If these derived values are used as private keys, they can always be regenerated using the seed.<br />
+A deterministic wallet can be backed up by storing just the <strong>seed</strong> and the <strong>key generation algorithm</strong>.</p>
+<h2 id="public-child-key-derivation"><a class="header" href="#public-child-key-derivation">Public Child Key Derivation</a></h2>
+<p>Elliptic Curve Cryptography (ECC) allows deriving a public key (<strong>K</strong>) from a private key (<strong>k</strong>) using a generator point (<strong>G</strong>):</p>
+<p>[
 K = k \times G
-\]
-
-A child key pair can be created by adding the same value to both sides:
-
-\[
+]</p>
+<p>A child key pair can be created by adding the same value to both sides:</p>
+<p>[
 K + (123 \times G) = (k + 123) \times G
-\]
-
-Key tweaks allow generating child public keys **without knowledge of the private key**.  
-Bob can generates multiple public keys from one public key by adding a constant c to the public key. If I know the constant c he added, I'll be able to derive the corresponding private key.
-
-This is useful for **separating frontend wallet applications from signing devices** (e.g., hardware wallets).
-
-## Hierarchical Deterministic (HD) Wallets (BIP32)
-HD wallets use a **tree structure** instead of a linear sequence of keys.  
-Each key can be a **parent** of multiple child keys, enabling:
-- **Separation of receiving and change addresses**.
-- **Organizational structure** (e.g., departments, subsidiaries).
-
-There is no limit on the depth of the key tree.
-
-## Seeds and Recovery Codes
-HD wallets derive **all private keys** from a **single seed**.  
-Losing access to the seed means losing access to all associated private keys.  
-
-**Recovery codes** use **human-readable words** for easy backup (e.g., **BIP-39 mnemonics**).
-
-### Example of a Seed Encoded in Hex and Words:
-- **Hex-encoded**:  
-  `0C1E 24E5 9177 79D2 97E1 4D45 F14E 1A1A`
-- **Word-encoded**:  
-  `army van defense carry jealous true garbage claim echo media make crunch`
-
-  We create a bunch of random bytes, use an algorthim to turn them into human readable words and use another algorithm to turn that into a seed which using a seed algorithm can be used to create a bunch of keys.
-
-### Risks of Memorizing Recovery Codes:
-- **Memory loss** results in permanent loss of funds.
-- **Physical coercion** can force disclosure of the code.
-- Writing down the **recovery code** is **highly recommended**.
-
-## Conclusion
-- **Deterministic key generation** ensures that private keys can always be recreated from a seed.
-- **Public key derivation** allows wallets to distribute public keys securely.
-- **HD wallets (BIP32)** enhance security and scalability by structuring keys hierarchically.
-- **Recovery codes** simplify backups but must be stored securely to prevent loss or theft.
-
-#### Bip32
-In BIP32, we start with a BIP39 seed and pass it through an HMAC-SHA512 function, which produces a 512-bit hash. The left 256 bits are used as the master private key, while the right 256 bits are used as the master chain code. The master public key is generated from the master private key using ECDSA.
-
-To derive child keys, we pass a combination of the parent keys (keys generated above) along with an index into the HMAC-SHA512 function to generate a new set of child keys. The diagram below explains the concept more clearly.
-```mermaid
-graph TD;
+]</p>
+<p>Key tweaks allow generating child public keys <strong>without knowledge of the private key</strong>.<br />
+Bob can generates multiple public keys from one public key by adding a constant c to the public key. If I know the constant c he added, I'll be able to derive the corresponding private key.</p>
+<p>This is useful for <strong>separating frontend wallet applications from signing devices</strong> (e.g., hardware wallets).</p>
+<h2 id="hierarchical-deterministic-hd-wallets-bip32"><a class="header" href="#hierarchical-deterministic-hd-wallets-bip32">Hierarchical Deterministic (HD) Wallets (BIP32)</a></h2>
+<p>HD wallets use a <strong>tree structure</strong> instead of a linear sequence of keys.<br />
+Each key can be a <strong>parent</strong> of multiple child keys, enabling:</p>
+<ul>
+<li><strong>Separation of receiving and change addresses</strong>.</li>
+<li><strong>Organizational structure</strong> (e.g., departments, subsidiaries).</li>
+</ul>
+<p>There is no limit on the depth of the key tree.</p>
+<h2 id="seeds-and-recovery-codes"><a class="header" href="#seeds-and-recovery-codes">Seeds and Recovery Codes</a></h2>
+<p>HD wallets derive <strong>all private keys</strong> from a <strong>single seed</strong>.<br />
+Losing access to the seed means losing access to all associated private keys.</p>
+<p><strong>Recovery codes</strong> use <strong>human-readable words</strong> for easy backup (e.g., <strong>BIP-39 mnemonics</strong>).</p>
+<h3 id="example-of-a-seed-encoded-in-hex-and-words"><a class="header" href="#example-of-a-seed-encoded-in-hex-and-words">Example of a Seed Encoded in Hex and Words:</a></h3>
+<ul>
+<li>
+<p><strong>Hex-encoded</strong>:<br />
+<code>0C1E 24E5 9177 79D2 97E1 4D45 F14E 1A1A</code></p>
+</li>
+<li>
+<p><strong>Word-encoded</strong>:<br />
+<code>army van defense carry jealous true garbage claim echo media make crunch</code></p>
+<p>We create a bunch of random bytes, use an algorthim to turn them into human readable words and use another algorithm to turn that into a seed which using a seed algorithm can be used to create a bunch of keys.</p>
+</li>
+</ul>
+<h3 id="risks-of-memorizing-recovery-codes"><a class="header" href="#risks-of-memorizing-recovery-codes">Risks of Memorizing Recovery Codes:</a></h3>
+<ul>
+<li><strong>Memory loss</strong> results in permanent loss of funds.</li>
+<li><strong>Physical coercion</strong> can force disclosure of the code.</li>
+<li>Writing down the <strong>recovery code</strong> is <strong>highly recommended</strong>.</li>
+</ul>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<ul>
+<li><strong>Deterministic key generation</strong> ensures that private keys can always be recreated from a seed.</li>
+<li><strong>Public key derivation</strong> allows wallets to distribute public keys securely.</li>
+<li><strong>HD wallets (BIP32)</strong> enhance security and scalability by structuring keys hierarchically.</li>
+<li><strong>Recovery codes</strong> simplify backups but must be stored securely to prevent loss or theft.</li>
+</ul>
+<h4 id="bip32"><a class="header" href="#bip32">Bip32</a></h4>
+<p>In BIP32, we start with a BIP39 seed and pass it through an HMAC-SHA512 function, which produces a 512-bit hash. The left 256 bits are used as the master private key, while the right 256 bits are used as the master chain code. The master public key is generated from the master private key using ECDSA.</p>
+<p>To derive child keys, we pass a combination of the parent keys (keys generated above) along with an index into the HMAC-SHA512 function to generate a new set of child keys. The diagram below explains the concept more clearly.</p>
+<pre class="mermaid">graph TD;
     A[Random Entropy] --&gt;|BIP-39| B[Seed]
     B --&gt;|HMAC-SHA512| C[Master Private Key &amp; Master Chain Code]
     C --&gt; D[Master Public Key]
@@ -568,7 +563,7 @@ graph TD;
     
     C --&gt;|Master becomes Parent| E
     D --&gt;|Master Public Key Used| E
-</code></pre>
+</pre>
 
                     </main>
 

@@ -16,6 +16,7 @@ $ seed=f1cc3bc03ef51cb43ee7844460fa5049e779e7425a6349c8e89dfbb0fd97bb73
 
 # Generate deterministic values
 $ for i in {0..2} ; do echo "$seed + $i" | sha256sum ; done
+```
 # Deterministic Key Generation and HD Wallets
 
 ## Deterministic Wallets
