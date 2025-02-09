@@ -315,12 +315,9 @@ Losing access to the seed means losing access to all associated private keys.</p
 <tr><td>Index Range</td><td><code>0</code> to <code>2³¹ - 1</code></td><td><code>2³¹</code> to <code>2³² - 1</code></td></tr>
 </tbody></table>
 </div>
-<h2 id="conclusion-1"><a class="header" href="#conclusion-1"><strong>Conclusion</strong></a></h2>
-<ul>
-<li><strong>Use normal derivation</strong> when you need a public key hierarchy.</li>
-<li><strong>Use hardened derivation</strong> when you want to protect the parent key from exposure.</li>
-</ul>
-<p>BIP-32 enables structured key management while maintaining security. 🚀</p>
+<h2 id="extended-private-keysxprv-and-extended-public-keys-xpub"><a class="header" href="#extended-private-keysxprv-and-extended-public-keys-xpub">Extended private keys(xprv) and Extended public keys (xpub)</a></h2>
+<p>xprv- parent private key + parent chaincode
+xpub- parent public key + parent chain code. This can only create public keys. It is perfect for watch only wallets.</p>
 
                     </main>
 

@@ -165,8 +165,7 @@ graph TD;
 | Risk of Parent Key Leak | ⚠️ Possible  | ✅ Secure |
 | Index Range      | `0` to `2³¹ - 1` | `2³¹` to `2³² - 1` |
 
-## **Conclusion**
-- **Use normal derivation** when you need a public key hierarchy.
-- **Use hardened derivation** when you want to protect the parent key from exposure.
 
-BIP-32 enables structured key management while maintaining security. 🚀
+## Extended private keys(xprv) and Extended public keys (xpub)
+xprv- parent private key + parent chaincode
+xpub- parent public key + parent chain code. This can only create public keys. It is perfect for watch only wallets.
