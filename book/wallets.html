@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Private keys - Bitcoin notes</title>
+        <title>Wallets - Bitcoin notes</title>
 
 
         <!-- Custom HTML head -->
@@ -152,108 +152,108 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="private-key-formats"><a class="header" href="#private-key-formats">Private Key Formats</a></h2>
-<p>A private key can be represented in different formats, all corresponding to the same 256-bit number.</p>
-<h3 id="common-private-key-formats"><a class="header" href="#common-private-key-formats">Common Private Key Formats</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>Type</th><th>Prefix</th><th>Description</th></tr></thead><tbody>
-<tr><td><strong>Hex</strong></td><td>None</td><td>64 hexadecimal digits</td></tr>
-<tr><td><strong>WIF</strong></td><td>5</td><td>Base58check encoding (base58 with version prefix of 128 and 32-bit checksum)</td></tr>
-<tr><td><strong>WIF-compressed</strong></td><td>K or L</td><td>Same as WIF but with added suffix <code>0x01</code> before encoding</td></tr>
-</tbody></table>
-</div>
-<hr />
-<h2 id="modern-relevancy-of-private-key-formats"><a class="header" href="#modern-relevancy-of-private-key-formats">Modern Relevancy of Private Key Formats</a></h2>
+                        <h1 id="summary-of-deterministic-key-generation-and-hd-wallets"><a class="header" href="#summary-of-deterministic-key-generation-and-hd-wallets">Summary of Deterministic Key Generation and HD Wallets</a></h1>
+<h2 id="hash-functions-and-deterministic-key-generation"><a class="header" href="#hash-functions-and-deterministic-key-generation">Hash Functions and Deterministic Key Generation</a></h2>
 <ul>
-<li>Early Bitcoin wallets generated independent private keys and required frequent backups.</li>
-<li>Modern wallets use <strong>deterministic wallets</strong>, generating all private keys from a single <strong>seed value</strong>.</li>
-<li><strong>Deterministic wallets</strong> only need a single backup.</li>
-<li><strong>Security concern:</strong> If an attacker acquires a single exported key plus some wallet metadata, they may derive all keys in the wallet.</li>
-<li><strong>No modern wallets support individual key import/export</strong> due to security risks.</li>
+<li>A <strong>hash function</strong> always produces the same output for the same input, but even a slight change in input results in a completely different output.</li>
+<li>A cryptographically secure hash function prevents prediction of the output even if the new input is known.</li>
+<li>A <strong>seed</strong> (random value) can be used to deterministically generate a sequence of derived values.</li>
 </ul>
-<hr />
-<h2 id="example-same-key-in-different-formats"><a class="header" href="#example-same-key-in-different-formats">Example: Same Key in Different Formats</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>Format</th><th>Private Key</th></tr></thead><tbody>
-<tr><td><strong>Hex</strong></td><td><code>1e99423a4ed27608a15a2616a2b0e9e52ced330ac530edcc32c8ffc6a526aedd</code></td></tr>
-<tr><td><strong>WIF</strong></td><td><code>5J3mBbAH58CpQ3Y5RNJpUKPE62SQ5tfcvU2JpbnkeyhfsYB1Jcn</code></td></tr>
-<tr><td><strong>WIF-compressed</strong></td><td><code>KxFC1jmwwCoACiCAWZ3eXa96mBM6tb3TYzGmf6YwgdGWZgawvrtJ</code></td></tr>
-</tbody></table>
-</div>
-<p>Each format represents the same key in different ways and can be converted into another format easily.</p>
-<hr />
-<h2 id="compressed-private-keys"><a class="header" href="#compressed-private-keys">Compressed Private Keys</a></h2>
-<ul>
-<li><strong>Misnomer:</strong> A "compressed private key" is actually <strong>longer</strong> than an uncompressed private key.</li>
-<li>The extra byte (<code>0x01</code>) <strong>signals</strong> that only compressed public keys should be derived from it.</li>
-<li>Modern wallets <strong>only</strong> export WIF-compressed private keys (<code>K</code> or <code>L</code> prefix).</li>
-<li><strong>Old wallets</strong> export WIF (uncompressed) keys (<code>5</code> prefix).</li>
-</ul>
-<h3 id="example-wif-vs-wif-compressed"><a class="header" href="#example-wif-vs-wif-compressed">Example: WIF vs WIF-Compressed</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>Format</th><th>Private Key</th></tr></thead><tbody>
-<tr><td><strong>Hex</strong></td><td><code>1E99423A4ED27608A15A2616A2B0E9E52CED330AC530EDCC32C8FFC6A526AEDD</code></td></tr>
-<tr><td><strong>WIF</strong></td><td><code>5J3mBbAH58CpQ3Y5RNJpUKPE62SQ5tfcvU2JpbnkeyhfsYB1Jcn</code></td></tr>
-<tr><td><strong>Hex-compressed</strong></td><td><code>1E99423A4ED27608A15A2616A2B0E9E52CED330AC530EDCC32C8FFC6A526AEDD01</code></td></tr>
-<tr><td><strong>WIF-compressed</strong></td><td><code>KxFC1jmwwCoACiCAWZ3eXa96mBM6tb3TYzGmf6YwgdGWZgawvrtJ</code></td></tr>
-</tbody></table>
-</div>
-<hr />
-<h2 id="vanity-addresses"><a class="header" href="#vanity-addresses">Vanity Addresses</a></h2>
-<ul>
-<li><strong>Vanity addresses</strong> are Bitcoin addresses with custom patterns (e.g., <code>1LoveBPzzD...</code>).</li>
-<li>They require generating and testing <strong>billions</strong> of private keys until a match is found.</li>
-<li><strong>Security:</strong> They are <strong>as secure</strong> as regular addresses but require brute-force computation.</li>
-<li><strong>Privacy Risk:</strong> They encourage address reuse, which can reduce financial privacy.</li>
-</ul>
-<h3 id="example-vanity-address-search-times"><a class="header" href="#example-vanity-address-search-times">Example: Vanity Address Search Times</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>Length</th><th>Pattern</th><th>Probability</th><th>Avg. Search Time (Desktop)</th></tr></thead><tbody>
-<tr><td>1</td><td><code>1K</code></td><td>1 in 58</td><td>&lt;1 ms</td></tr>
-<tr><td>4</td><td><code>1Kids</code></td><td>1 in 11M</td><td>1 min</td></tr>
-<tr><td>7</td><td><code>1KidsCha</code></td><td>1 in 2.2T</td><td>3-4 months</td></tr>
-<tr><td>10</td><td><code>1KidsCharit</code></td><td>1 in 400Q</td><td>46,000 years</td></tr>
-</tbody></table>
-</div>
-<ul>
-<li><strong>Specialized GPUs</strong> are required for patterns longer than 7 characters.</li>
-<li><strong>Vanity pools</strong> exist, where miners generate vanity addresses for a fee.</li>
-</ul>
-<hr />
-<h2 id="paper-wallets-obsolete"><a class="header" href="#paper-wallets-obsolete">Paper Wallets (OBSOLETE!)</a></h2>
-<blockquote>
-<p><strong>Warning:</strong> Paper wallets are <strong>obsolete and dangerous</strong> due to security risks.</p>
-</blockquote>
-<ul>
-<li>Private keys printed on paper for offline storage.</li>
-<li>Often include the corresponding Bitcoin address.</li>
-<li>Risks:
-<ul>
-<li>Many were compromised by malicious generators.</li>
-<li>Easily lost, stolen, or destroyed.</li>
-<li>Should <strong>not</strong> be used for storing Bitcoin.</li>
-<li><strong>Better alternative:</strong> Hardware wallets &amp; seed phrase backups.</li>
-</ul>
-</li>
-</ul>
-<hr />
-<h3 id="summary"><a class="header" href="#summary">Summary</a></h3>
-<ul>
-<li><strong>Private keys</strong> can be stored in different formats, with WIF and WIF-compressed being common.</li>
-<li><strong>Modern wallets use deterministic seeds</strong> and <strong>do not allow</strong> individual key import/export.</li>
-<li><strong>Compressed keys</strong> refer to <strong>public keys</strong>, not private keys.</li>
-<li><strong>Vanity addresses</strong> are impractical for long patterns but were popular in Bitcoin’s early days.</li>
-<li><strong>Paper wallets are insecure</strong> and should be avoided.</li>
-</ul>
-<p>For safe Bitcoin storage, use <strong>deterministic wallets</strong> and <strong>hardware devices</strong> instead of exporting/importing private keys.</p>
+<h3 id="example-of-deterministic-key-generation"><a class="header" href="#example-of-deterministic-key-generation">Example of Deterministic Key Generation:</a></h3>
+<pre><code class="language-bash"># Generate entropy (random value)
+$ dd if=/dev/random count=1 status=none | sha256sum
+f1cc3bc03ef51cb43ee7844460fa5049e779e7425a6349c8e89dfbb0fd97bb73  -
+
+# Set the seed
+$ seed=f1cc3bc03ef51cb43ee7844460fa5049e779e7425a6349c8e89dfbb0fd97bb73
+
+# Generate deterministic values
+$ for i in {0..2} ; do echo "$seed + $i" | sha256sum ; done
+# Deterministic Key Generation and HD Wallets
+
+## Deterministic Wallets
+If these derived values are used as private keys, they can always be regenerated using the seed.  
+A deterministic wallet can be backed up by storing just the **seed** and the **key generation algorithm**.
+
+## Public Child Key Derivation
+Elliptic Curve Cryptography (ECC) allows deriving a public key (**K**) from a private key (**k**) using a generator point (**G**):
+
+\[
+K = k \times G
+\]
+
+A child key pair can be created by adding the same value to both sides:
+
+\[
+K + (123 \times G) = (k + 123) \times G
+\]
+
+Key tweaks allow generating child public keys **without knowledge of the private key**.  
+Bob can generates multiple public keys from one public key by adding a constant c to the public key. If I know the constant c he added, I'll be able to derive the corresponding private key.
+
+This is useful for **separating frontend wallet applications from signing devices** (e.g., hardware wallets).
+
+## Hierarchical Deterministic (HD) Wallets (BIP32)
+HD wallets use a **tree structure** instead of a linear sequence of keys.  
+Each key can be a **parent** of multiple child keys, enabling:
+- **Separation of receiving and change addresses**.
+- **Organizational structure** (e.g., departments, subsidiaries).
+
+There is no limit on the depth of the key tree.
+
+## Seeds and Recovery Codes
+HD wallets derive **all private keys** from a **single seed**.  
+Losing access to the seed means losing access to all associated private keys.  
+
+**Recovery codes** use **human-readable words** for easy backup (e.g., **BIP-39 mnemonics**).
+
+### Example of a Seed Encoded in Hex and Words:
+- **Hex-encoded**:  
+  `0C1E 24E5 9177 79D2 97E1 4D45 F14E 1A1A`
+- **Word-encoded**:  
+  `army van defense carry jealous true garbage claim echo media make crunch`
+
+  We create a bunch of random bytes, use an algorthim to turn them into human readable words and use another algorithm to turn that into a seed which using a seed algorithm can be used to create a bunch of keys.
+
+### Risks of Memorizing Recovery Codes:
+- **Memory loss** results in permanent loss of funds.
+- **Physical coercion** can force disclosure of the code.
+- Writing down the **recovery code** is **highly recommended**.
+
+## Conclusion
+- **Deterministic key generation** ensures that private keys can always be recreated from a seed.
+- **Public key derivation** allows wallets to distribute public keys securely.
+- **HD wallets (BIP32)** enhance security and scalability by structuring keys hierarchically.
+- **Recovery codes** simplify backups but must be stored securely to prevent loss or theft.
+
+#### Bip32
+In BIP32, we start with a BIP39 seed and pass it through an HMAC-SHA512 function, which produces a 512-bit hash. The left 256 bits are used as the master private key, while the right 256 bits are used as the master chain code. The master public key is generated from the master private key using ECDSA.
+
+To derive child keys, we pass a combination of the parent keys (keys generated above) along with an index into the HMAC-SHA512 function to generate a new set of child keys. The diagram below explains the concept more clearly.
+```mermaid
+graph TD;
+    A[Random Entropy] --&gt;|BIP-39| B[Seed]
+    B --&gt;|HMAC-SHA512| C[Master Private Key &amp; Master Chain Code]
+    C --&gt; D[Master Public Key]
+    
+    subgraph Child Key Derivation
+        E[Parent Private Key &amp; Parent Chain Code &amp; Parent Public Key] --&gt;|Index + HMAC-SHA512| F[New Child Private Key &amp; New Child Chain Code]
+        F --&gt; G[New Child Public Key]
+        F &amp; G --&gt;|Used as Parent for Next Level| E
+    end
+    
+    C --&gt;|Master becomes Parent| E
+    D --&gt;|Master Public Key Used| E
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="bech32m.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="private-keys.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="wallets.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -261,13 +261,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="bech32m.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="private-keys.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="wallets.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

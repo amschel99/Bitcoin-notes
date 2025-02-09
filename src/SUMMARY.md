@@ -5,3 +5,4 @@
 - [Segregated Witness (Segwit)](./segwit.md)
 - [Bech32m addresses](./bech32m.md)
 - [Private keys](./private-keys.md)
+- [Wallets](./wallets.md)
