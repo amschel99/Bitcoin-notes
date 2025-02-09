@@ -168,4 +168,7 @@ graph TD;
 
 ## Extended private keys(xprv) and Extended public keys (xpub)
 xprv- parent private key + parent chaincode
-xpub- parent public key + parent chain code. This can only create public keys. It is perfect for watch only wallets.
+
+xpub- parent public key + parent chain code. This can only create public keys.
+
+ It is perfect for watch only wallets.
