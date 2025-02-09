@@ -1,4 +1,4 @@
-# Summary of Deterministic Key Generation and HD Wallets
+# Deterministic Key Generation and HD Wallets
 
 ## Hash Functions and Deterministic Key Generation
 - A **hash function** always produces the same output for the same input, but even a slight change in input results in a completely different output.
@@ -17,7 +17,7 @@ $ seed=f1cc3bc03ef51cb43ee7844460fa5049e779e7425a6349c8e89dfbb0fd97bb73
 # Generate deterministic values
 $ for i in {0..2} ; do echo "$seed + $i" | sha256sum ; done
 ```
-# Deterministic Key Generation and HD Wallets
+
 
 ## Deterministic Wallets
 If these derived values are used as private keys, they can always be regenerated using the seed.  
@@ -78,6 +78,7 @@ Losing access to the seed means losing access to all associated private keys.
 In BIP32, we start with a BIP39 seed and pass it through an HMAC-SHA512 function, which produces a 512-bit hash. The left 256 bits are used as the master private key, while the right 256 bits are used as the master chain code. The master public key is generated from the master private key using ECDSA.
 
 To derive child keys, we pass a combination of the parent keys (keys generated above) along with an index into the HMAC-SHA512 function to generate a new set of child keys. The diagram below explains the concept more clearly.
+
 ```mermaid
 graph TD;
     A[Random Entropy] -->|BIP-39| B[Seed]

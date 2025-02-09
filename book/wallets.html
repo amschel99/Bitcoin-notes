@@ -152,7 +152,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="summary-of-deterministic-key-generation-and-hd-wallets"><a class="header" href="#summary-of-deterministic-key-generation-and-hd-wallets">Summary of Deterministic Key Generation and HD Wallets</a></h1>
+                        <h1 id="deterministic-key-generation-and-hd-wallets"><a class="header" href="#deterministic-key-generation-and-hd-wallets">Deterministic Key Generation and HD Wallets</a></h1>
 <h2 id="hash-functions-and-deterministic-key-generation"><a class="header" href="#hash-functions-and-deterministic-key-generation">Hash Functions and Deterministic Key Generation</a></h2>
 <ul>
 <li>A <strong>hash function</strong> always produces the same output for the same input, but even a slight change in input results in a completely different output.</li>
@@ -170,7 +170,6 @@ $ seed=f1cc3bc03ef51cb43ee7844460fa5049e779e7425a6349c8e89dfbb0fd97bb73
 # Generate deterministic values
 $ for i in {0..2} ; do echo "$seed + $i" | sha256sum ; done
 </code></pre>
-<h1 id="deterministic-key-generation-and-hd-wallets"><a class="header" href="#deterministic-key-generation-and-hd-wallets">Deterministic Key Generation and HD Wallets</a></h1>
 <h2 id="deterministic-wallets"><a class="header" href="#deterministic-wallets">Deterministic Wallets</a></h2>
 <p>If these derived values are used as private keys, they can always be regenerated using the seed.<br />
 A deterministic wallet can be backed up by storing just the <strong>seed</strong> and the <strong>key generation algorithm</strong>.</p>
