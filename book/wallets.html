@@ -222,9 +222,17 @@ Losing access to the seed means losing access to all associated private keys.</p
 <li><strong>HD wallets (BIP32)</strong> enhance security and scalability by structuring keys hierarchically.</li>
 <li><strong>Recovery codes</strong> simplify backups but must be stored securely to prevent loss or theft.</li>
 </ul>
-<h4 id="bip32"><a class="header" href="#bip32">Bip32</a></h4>
-<p>In BIP32, we start with a BIP39 seed and pass it through an HMAC-SHA512 function, which produces a 512-bit hash. The left 256 bits are used as the master private key, while the right 256 bits are used as the master chain code. The master public key is generated from the master private key using ECDSA.</p>
-<p>To derive child keys, we pass a combination of the parent keys (keys generated above) along with an index into the HMAC-SHA512 function to generate a new set of child keys. The diagram below explains the concept more clearly.</p>
+<h1 id="bip-32-hierarchical-deterministic-wallets"><a class="header" href="#bip-32-hierarchical-deterministic-wallets">BIP-32: Hierarchical Deterministic Wallets</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>BIP-32 (Bitcoin Improvement Proposal 32) defines <strong>Hierarchical Deterministic (HD) wallets</strong>, allowing the generation of an entire tree of keys from a single master seed.</p>
+<h3 id="key-benefits-of-bip-32"><a class="header" href="#key-benefits-of-bip-32"><strong>Key Benefits of BIP-32</strong></a></h3>
+<ul>
+<li>A single seed can derive many keys.</li>
+<li>Public keys can be derived without exposing private keys.</li>
+<li>Supports hierarchical organization of keys.</li>
+<li>Enables watch-only wallets.</li>
+</ul>
+<h2 id="bip-32-key-derivation-process"><a class="header" href="#bip-32-key-derivation-process"><strong>BIP-32 Key Derivation Process</strong></a></h2>
 <pre class="mermaid">graph TD;
     A[Random Entropy] --&gt;|BIP-39| B[Seed]
     B --&gt;|HMAC-SHA512| C[Master Private Key &amp; Master Chain Code]
@@ -239,6 +247,79 @@ Losing access to the seed means losing access to all associated private keys.</p
     C --&gt;|Master becomes Parent| E
     D --&gt;|Master Public Key Used| E
 </pre>
+<h2 id="master-key-generation"><a class="header" href="#master-key-generation"><strong>Master Key Generation</strong></a></h2>
+<ol>
+<li><strong>Start with a BIP-39 Seed.</strong></li>
+<li>Compute HMAC-SHA512 with the key <code>"Bitcoin seed"</code> and the seed as input.</li>
+<li>The output is <strong>512 bits</strong>:
+<ul>
+<li><strong>Left 256 bits</strong> → <strong>Master Private Key</strong></li>
+<li><strong>Right 256 bits</strong> → <strong>Master Chain Code</strong></li>
+</ul>
+</li>
+<li>The <strong>Master Public Key</strong> is derived using the secp256k1 curve.</li>
+</ol>
+<h2 id="child-key-derivation"><a class="header" href="#child-key-derivation"><strong>Child Key Derivation</strong></a></h2>
+<p>BIP-32 allows two types of child key derivation:</p>
+<ol>
+<li><strong>Normal (Non-Hardened) Child Keys</strong> (Index <code>0</code> to <code>2³¹ - 1</code>)</li>
+<li><strong>Hardened Child Keys</strong> (Index <code>2³¹</code> to <code>2³² - 1</code>)</li>
+</ol>
+<h3 id="normal-child-key-derivation"><a class="header" href="#normal-child-key-derivation"><strong>Normal Child Key Derivation</strong></a></h3>
+<pre class="mermaid">graph TD;
+    P[Parent Public Key] --&gt;|Index + Chain Code| HMAC[HMAC-SHA512]
+    HMAC --&gt;|Left 256 bits (IL)| ADD[IL + Parent Private Key mod n]
+    ADD --&gt; C[Child Private Key]
+    HMAC --&gt;|Right 256 bits (IR)| CC[New Chain Code]
+    C --&gt; CP[Child Public Key]
+</pre>
+<ul>
+<li>Uses <strong>parent public key</strong>, <strong>index</strong>, and <strong>parent chain code</strong>.</li>
+<li><strong>Formula:</strong>
+<pre><code>HMAC-SHA512(parent chain code, parent public key || index)
+</code></pre>
+</li>
+<li>Left 256 bits (<strong>IL</strong>) modifies the private key:
+<pre><code>child_private_key = (IL + parent_private_key) mod n
+</code></pre>
+</li>
+<li>Right 256 bits (<strong>IR</strong>) becomes the <strong>new child chain code</strong>.</li>
+<li><strong>Allows public key derivation without needing the private key.</strong></li>
+</ul>
+<h3 id="hardened-child-key-derivation"><a class="header" href="#hardened-child-key-derivation"><strong>Hardened Child Key Derivation</strong></a></h3>
+<pre class="mermaid">graph TD;
+    PP[Parent Private Key] --&gt;|Index + Chain Code| HMAC_H[HMAC-SHA512]
+    HMAC_H --&gt;|Left 256 bits (IL)| ADD_H[IL + Parent Private Key mod n]
+    ADD_H --&gt; C_H[Child Private Key]
+    HMAC_H --&gt;|Right 256 bits (IR)| CC_H[New Chain Code]
+    C_H --&gt; CP_H[Child Public Key]
+</pre>
+<ul>
+<li>Uses <strong>parent private key</strong>, <strong>index</strong>, and <strong>parent chain code</strong>.</li>
+<li><strong>Formula:</strong>
+<pre><code>HMAC-SHA512(parent chain code, parent private key || index)
+</code></pre>
+</li>
+<li>The left 256 bits (<strong>IL</strong>) tweak the private key:
+<pre><code>child_private_key = (IL + parent_private_key) mod n
+</code></pre>
+</li>
+<li><strong>This prevents public key-based attacks that could leak the parent private key.</strong></li>
+</ul>
+<h2 id="summary"><a class="header" href="#summary"><strong>Summary</strong></a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Feature</th><th>Normal Derivation</th><th>Hardened Derivation</th></tr></thead><tbody>
+<tr><td>Uses Public Key</td><td>✅ Yes</td><td>❌ No (Uses Private Key)</td></tr>
+<tr><td>Private Key Needed?</td><td>❌ No</td><td>✅ Yes</td></tr>
+<tr><td>Risk of Parent Key Leak</td><td>⚠️ Possible</td><td>✅ Secure</td></tr>
+<tr><td>Index Range</td><td><code>0</code> to <code>2³¹ - 1</code></td><td><code>2³¹</code> to <code>2³² - 1</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="conclusion-1"><a class="header" href="#conclusion-1"><strong>Conclusion</strong></a></h2>
+<ul>
+<li><strong>Use normal derivation</strong> when you need a public key hierarchy.</li>
+<li><strong>Use hardened derivation</strong> when you want to protect the parent key from exposure.</li>
+</ul>
+<p>BIP-32 enables structured key management while maintaining security. 🚀</p>
 
                     </main>
 
